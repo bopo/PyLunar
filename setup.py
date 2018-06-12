@@ -1,7 +1,7 @@
 import codecs
 import os
 
-from lunarcalendar import __version__
+from pylunar import __version__
 from setuptools import setup
 
 
@@ -12,17 +12,16 @@ def read(fname):
 
 
 setup(
-    name='LunarCalendar',
+    name='pylunar',
     version=__version__,
     description='A lunar calendar converter, including a number of lunar and solar holidays, mainly from China.',
     long_description=read("README.rst"),
-    author='wolfhong',
-    author_email='hongxucai1991@gmail.com',
-    url='https://github.com/wolfhong/LunarCalendar',
+    author='bopo',
+    author_email='ibopo@126.com',
+    url='https://github.com/bopo/pylunar',
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
@@ -34,16 +33,11 @@ setup(
         'solar calendar',  'lunar solar converter', 'lunisolar calendar',
     ],
     license='MIT',
-    packages=["lunarcalendar", ],
+    packages=["pylunar", ],
     install_requires=[
         'python-dateutil>=2.6.1',
         'ephem>=3.7.5.3',  # basic astronomical computations for Python
         'pytz',  # timezone support
     ],
     python_requires='>=2.7, <4',
-    entry_points={
-        'console_scripts': [
-            'lunar-find=lunarcalendar.command:find',
-        ],
-    },
 )

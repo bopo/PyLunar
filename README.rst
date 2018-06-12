@@ -1,60 +1,49 @@
-LunarCalendar: A Lunar-Solar Converter
-======================================
+pylunar: 一个农历-公历转换器
+==================================
 
 .. image::
-  https://img.shields.io/pypi/v/LunarCalendar.svg
-  :target: https://pypi.python.org/pypi/LunarCalendar
+  https://img.shields.io/pypi/v/pylunar.svg
+  :target: https://pypi.python.org/pypi/pylunar
   :alt: Last stable version (PyPI)
-
-.. image::
-  https://travis-ci.org/wolfhong/LunarCalendar.svg
-  :target: https://travis-ci.org/wolfhong/LunarCalendar
-  :alt: build status
 
 
 Overview
 --------
 
-`Chinese version(中文版) <https://github.com/wolfhong/LunarCalendar/blob/develop/README_zh.rst>`_ is provided.
+pylunar 是一个农历-公历的转换器, 收录了一些在中国常见的农历(阴阳历的一种)和公历(Gregorian Calendar, 又称阳历、西历、新历)节假日。
+由于韩国、日本、越南的农历与中国是相同的，只是节假日有所不同，所以支持对韩国、日本节假日和语言的扩展。
 
-LunarCalendar is a Lunar-Solar Converter, containing a number of lunar and solar holidays in China.
-
-Korean, Japanese and Vietnamese lunar calendar is the same as Chinese calendar, but has different holidays.
-If `LunarCalendar` is extended; Korean, Japanese and Vietnamese holidays are easily included, with their languages.
-
-LunarCalendar supports the time range 1900-2100. But if you have a need for the time range, you can use ``generate.html`` to extend it.
-
-LunarCalendar is inspired by `Lunar-Solar-Calendar-Converter <https://github.com/isee15/Lunar-Solar-Calendar-Converter>`_.
+转换器支持时间段从1900-2100, 如果需要更长的时间段，利用 ``generate.html`` 生成的数据即可。
+转换器的实现，参考自 `Lunar-Solar-Calendar-Converter <https://github.com/isee15/Lunar-Solar-Calendar-Converter>`_.
 
 
 Features
 --------
 
-* Accurate raw data, synchronize with Microsolf's ``ChineseLunisolarCalendar`` class
-* Easy to extend holidays and languages, supported both `zh_hans` and `zh_hant`
-* Included Lunar Festivals, such as: MidAutumn Festival, Chinese New Year Eve, DragonBoat Festivals
-* Included Solar Festivals without fixed dates, such as: Mother's Day, Easter
-* Added legality check of the lunar and solar date
-* Supported 24 solar terms
+* 原始数据精准, 通过了微软 ``ChineseLunisolarCalendar`` 类的比对
+* 节假日扩展与语言支持非常便捷, 支持简体和繁体
+* 收录了农历节假日, 如: 中秋/端午/除夕/重阳
+* 收录了每年不固定日期的节假日, 如: 母亲节(每年5月第2个星期日)
+* 加入了农历+公历的合法性检查
+* 支持二十四节气
 
 
 Install
 -------
 
-LunarCalendar can be installed from the PyPI with `easy_install`::
+pylunar can be installed from the PyPI with `easy_install`::
 
-   $ easy_install LunarCalendar
+   $ easy_install pylunar
 
 Or pip::
 
-   $ pip install LunarCalendar
+   $ pip install pylunar
 
 
 Console Commands
 ----------------
 
-A console command called `lunar-find` can be used to find the date of the festival, using it's chinese name.
-Default to this year. Supporting alias of the festival.
+命令行可查找每年特定节日的日期，默认查找今年。节日支持别名查询:
 
 .. code-block:: console
 
@@ -67,7 +56,7 @@ Default to this year. Supporting alias of the festival.
     $ lunar-find 登高节 2019
     重阳节 on 2019: 2019-10-07
 
-You can also print all included festivals or 24 solar terms by date asc with:
+按照时间升序打印对应年份的所有内置日期, 所有节日, 所有节气:
 
 .. code-block:: console
 
@@ -79,60 +68,69 @@ You can also print all included festivals or 24 solar terms by date asc with:
 Quickstart
 ----------
 
-Solar to Lunar:
+公历转农历:
 
 .. code-block:: python
 
     import datetime
-    from lunarcalendar import Converter, Solar, Lunar, DateNotExist
+    from pylunar import Converter, Solar, Lunar, DateNotExist
 
     solar = Solar(2018, 1, 1)
+
     print(solar)
     lunar = Converter.Solar2Lunar(solar)
+
     print(lunar)
     solar = Converter.Lunar2Solar(lunar)
+
     print(solar)
     print(solar.to_date(), type(solar.to_date()))
 
-Lunar to Solar:
+农历转公历:
 
 .. code-block:: python
 
     lunar = Lunar(2018, 2, 30, isleap=False)
+
     print(lunar)
     solar = Converter.Lunar2Solar(lunar)
+
     print(solar)
     lunar = Converter.Solar2Lunar(solar)
+
     print(lunar)
     print(lunar.to_date(), type(lunar.to_date()))
     print(Lunar.from_date(datetime.date(2018, 4, 15)))
 
-Legality check for solar and lunar date. 2018-2-15(Leap Month) does not exist, but 2012-4-4(Leap Month) exists:
+日期合法性检查, 农历和公历都起作用, 如: 农历闰月2018-2-15是不存在的，但农历闰月2012-4-4是存在的:
 
 .. code-block:: python
 
     Lunar(2012, 4, 4, isleap=True)  # date(2012, 5, 24)
+
     try:
         lunar = Lunar(2018, 2, 15, isleap=True)
     except DateNotExist:
         print(traceback.format_exc())
 
-Print all the festivals included, with Chinese and English. Other languages are welcome to extend(Fork & Pull Request).
+打印收录的节假日, 支持中文、英文输出，其他语言需要扩展(欢迎fork & pull-request):
 
 .. code-block:: python
 
-    from lunarcalendar.festival import festivals
+    from pylunar.festival import festivals
 
     # print festivals, using English or Chinese
     print("----- print all festivals on 2018 in chinese: -----")
+
     for fest in festivals:
         print(fest.get_lang('zh'), fest(2018))
 
     print("----- print all festivals on 2017 in english: -----")
+    
     for fest in festivals:
         print(fest.get_lang('en'), fest(2017))
 
-Output:
+输出:
 
 .. code-block:: shell
 
@@ -158,21 +156,20 @@ Output:
 Contribution
 ------------
 
-Including festival standards:
+收录节日的标准:
 
-* Common holidays in the the country, such as: Christmas, Halloween, etc.
-* Lunar holidays.
-* Solar holidays without fixed dates, such as: Mother's Day, Easter, etc.
+* 在对应国家中常见的节假日，如: 圣诞节、万圣节等。
+* 农历节假日
+* 公历节假日，但每年时间不固定，如: 母亲节、复活节等。
 
-Supporting Chinese and English only now. If you want to add Korean, Japanese or Vietnamese supports, modify ``lunarcalendar/festival.py`` to add holidays and languages.
+目前只支持中文和英文，如果要支持韩文、日文的节假日，需要在 ``pylunar/festival.py`` 中添加对应的语言和节假日。
 
-Some unusual holidays may not be included, `welcom to extend <https://github.com/wolfhong/LunarCalendar/issues>`_.
-
+一些罕见的节假日可能未被收录, `欢迎补充 <https://github.com/wolfhong/pylunar/issues>`_ .
 
 
 About
 -----
 
-* `Homepage <http://github.com/wolfhong/LunarCalendar>`_
-* `PyPI <https://pypi.python.org/pypi/LunarCalendar>`_
-* `Issue tracker <https://github.com/wolfhong/LunarCalendar/issues?status=new&status=open>`_
+* `Homepage <http://github.com/wolfhong/pylunar>`_
+* `PyPI <https://pypi.python.org/pypi/pylunar>`_
+* `Issue tracker <https://github.com/wolfhong/pylunar/issues?status=new&status=open>`_
