@@ -1,0 +1,8 @@
+{
+  "tests/test_calendar.py": true,
+  "tests/test_calendar.py::FuncTestCase::testGet8Zi": true,
+  "tests/test_calendar.py::FuncTestCase::testGetLunarFeast": true,
+  "tests/test_calendar.py::FuncTestCase::testGetLunarString": true,
+  "tests/test_calendar.py::FuncTestCase::testGregorian2Lunar": true,
+  "tests/test_calendar.py::FuncTestCase::testLunar2Gregorian": true
+}
