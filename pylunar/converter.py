@@ -1,43 +1,36 @@
-# -*- coding: utf-8 -*-
-# rewrite from https://github.com/isee15/Lunar-Solar-Calendar-Converter/python
 import datetime
 import traceback
 
 
 class DateNotExist(Exception):
     ''' eg. datetime.date(2017, 2, 29) doesn't exist. '''
+    def GetBitInt(data, length, shift):
+        return (data & (((1 << length) - 1) << shift)) >> shift
 
 
-def GetBitInt(data, length, shift):
-    return (data & (((1 << length) - 1) << shift)) >> shift
+    def SolarToInt(y, m, d):
+        m = (m + 9) % 12
+        y -= m // 10
+        return 365 * y + y // 4 - y // 100 + y // 400 + (m * 306 + 5) // 10 + (d - 1)
 
 
-def SolarToInt(y, m, d):
-    m = (m + 9) % 12
-    y -= m // 10
-    return 365 * y + y // 4 - y // 100 + y // 400 + (m * 306 + 5) // 10 + (d - 1)
-
-
-def SolarFromInt(g):
-    y = (10000 * g + 14780) // 3652425
-    ddd = g - (365 * y + y // 4 - y // 100 + y // 400)
-
-    if ddd < 0:
-        y -= 1
+    def SolarFromInt(g):
+        y = (10000 * g + 14780) // 3652425
         ddd = g - (365 * y + y // 4 - y // 100 + y // 400)
-    
-    mi = (100 * ddd + 52) // 3060
-    mm = (mi + 2) % 12 + 1
-    y += (mi + 2) // 12
-    dd = ddd - (mi * 306 + 5) // 10 + 1
-    solar = Solar(y, mm, dd)
 
-    return solar
+        if ddd < 0:
+            y -= 1
+            ddd = g - (365 * y + y // 4 - y // 100 + y // 400)
+        
+        mi = (100 * ddd + 52) // 3060
+        mm = (mi + 2) % 12 + 1
+        y += (mi + 2) // 12
+        dd = ddd - (mi * 306 + 5) // 10 + 1
+        solar = Solar(y, mm, dd)
 
-# ##########################################
+        return solar
 
 
-# @unicode_compatible
 class Solar(object):
     def __init__(self, year, month, day):
         self.day = day
@@ -89,7 +82,6 @@ class Solar(object):
         return Solar(that.year, that.month, that.day)
 
 
-# @unicode_compatible
 class Lunar(object):
     def __init__(self, year, month, day, isleap=False, check=True):
         self.isleap = isleap

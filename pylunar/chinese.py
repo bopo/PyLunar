@@ -1,5 +1,23 @@
-from ._era import BOUGHS, LUNAR_DAY, LUNAR_MON, TRUNKS, ZODIAC
+from ._era import (BOUGHS, LUNAR_DAY, LUNAR_MON, MOON_ERA, TIME_ERA, TRUNKS,
+                   ZODIAC)
 
+
+def lunar_zodiac(year=None):
+    lsx = ((year - 4) % 60) % 12
+    
+    if lsx < 0 or lsx >= len(ZODIAC):
+        raise ValueError('Error Year for Shuxiang')
+
+    return ZODIAC[lsx]
+
+def lunar_year_era(year=None):
+    pass
+
+def lunar_name(lunar=None):
+    pass
+
+def lunar_data_era(lunar=None):
+    pass
 
 def LunarString(lunar, embolism=False):
     # 生成属相
@@ -11,12 +29,12 @@ def LunarString(lunar, embolism=False):
     sShuxiang = ZODIAC[lsx]
 
     # 生成农历天干
-    nTianGan = ((lunar.year - 4) % 60) % 10
+    nTRUNKS = ((lunar.year - 4) % 60) % 10
     
-    if nTianGan < 0 or nTianGan >= len(TRUNKS):
+    if nTRUNKS < 0 or nTRUNKS >= len(TRUNKS):
         raise ValueError('Error Year for TianGan')
     
-    sTianGan = TRUNKS[nTianGan]
+    sTianGan = TRUNKS[nTRUNKS]
     
     # 生成地支
     nDiZhi = ((lunar.year - 4) % 60) % 12
@@ -50,13 +68,14 @@ def LunarString(lunar, embolism=False):
     #     'day': sNongliDay,
     # }
 
-
+def solarterm(solar):
+    pass
 
 def LunarEra(lunar, hour=None, minute=None):
     # (lunar.year, lunar.month, lunar.day, hour, minute) = xxx_todo_changeme4
     (sShuxiang, sTianGan, sDiZhi, sNongliMonth, sNongliDay) = LunarString(lunar, True)
     
-    nTianGan = ((lunar.year - 4) % 60) % 10
+    nTRUNKS = ((lunar.year - 4) % 60) % 10
     
     # 时辰
     nShiCheng = int(hour / 2)
@@ -68,20 +87,13 @@ def LunarEra(lunar, hour=None, minute=None):
         nShiCheng = 0
     
     # 分钟
-    nMinute = int(minute / 10)
+    # nMinute = int(minute / 10)
     
-    if hour % 2 == 0:
-        nMinute += 6  # 1'分'含120分钟
+    # if hour % 2 == 0:
+    #     nMinute += 6  # 1'分'含120分钟
 
     # 年干支
     str_Year = sTianGan + sDiZhi
-    # 月干支
-    cListMonth = settings.cListMonth
-
-    # 天干名称
-    cTianGan = settings.cTianGan
-    # 地支名称
-    cDizhi = settings.cDizhi
 
     (sFeast, nFeastMonth) = Get24LunarFeast((lunar.year, lunar.month, lunar.day))
     nMonth = nFeastMonth  # 二十四节气定年月支
@@ -91,22 +103,19 @@ def LunarEra(lunar, hour=None, minute=None):
             nMonth = 1
 
             for nTG in range(0, 10):
-                if sTianGan == cTianGan[nTG]:
-                    sTianGan = cTianGan[(nTG - 1) % 10]
+                if sTianGan == TRUNKS[nTG]:
+                    sTianGan = TRUNKS[(nTG - 1) % 10]
                     break
 
             for nDZ in range(0, 12):
-                if sDiZhi == cDizhi[nDZ]:
-                    sDiZhi = cDizhi[(nDZ - 1) % 12]
+                if sDiZhi == BOUGHS[nDZ]:
+                    sDiZhi = BOUGHS[(nDZ - 1) % 12]
                     break
 
-        # if nFeastMonth == 13:
-        #     nMonth = 1
-
-    if nTianGan >= 5:
-        nTianGan -= 5
+    if nTRUNKS >= 5:
+        nTRUNKS -= 5
     
-    str_Month = cListMonth[nMonth - 1][nTianGan]
+    str_Month = MOON_ERA[nMonth - 1][nTRUNKS]
     # 日干支
     # 1.求元旦干支 以阳历日期来求
     nGongYuanYear = lunar.year % 100  # 公元纪年的最后两位
@@ -121,7 +130,7 @@ def LunarEra(lunar, hour=None, minute=None):
         nB = nB + 1
     
     nYuanDanGanZHi = nA + nB
-    # 2.查表 以cListMonth排列
+    # 2.查表 以MOON_ERA排列
     # 1901～2000年间以甲戌作1向后推某年C的值，既是该年元旦的干支﹙2001～2100年间以己未作1﹚
     nGongYuan = lunar.year
     
@@ -142,17 +151,18 @@ def LunarEra(lunar, hour=None, minute=None):
     
         nY = (nY + 7) % 12
     
-    str_YuanDanDay = cListMonth[nY][nX]
+    str_YuanDanDay = MOON_ERA[nY][nX]
+    
     # 3.求当日干支
     nDayGan, nDayZhi = 0, 0
 
     for n in range(0, 10):
-        if str_YuanDanDay[:1] == cTianGan[n]:  # C源码中文为两个字节，Python为一个
+        if str_YuanDanDay[:1] == TRUNKS[n]:  # C源码中文为两个字节，Python为一个
             nDayGan = n
             break
 
     for k in range(0, 12):
-        if str_YuanDanDay[1:] == cDizhi[k]:
+        if str_YuanDanDay[1:] == BOUGHS[k]:
             nDayZhi = k
             break
 
@@ -205,27 +215,24 @@ def LunarEra(lunar, hour=None, minute=None):
         if lunar.month > 2:
             nRunYear += 1
 
-    cListTime = settings.cListTime
     # (nDayGan）+（nDay）+（所求月的天干加减数、闰年三月以后减1）÷10
     nTodayGan = (nDayGan + lunar.day + nGanRun + nRunYear) % 10
     #（所求年份的元旦地支）+（所求日期）+（所求月的地支加减数、闰年三月以后减1）÷12
     nTodayZhi = (nDayZhi + lunar.day + nZhiRun + nRunYear) % 12
-
-    str_TodayGan = cTianGan[nTodayGan]
-    str_TodayZhi = cDizhi[nTodayZhi]
     
-    str_Day = str_TodayGan + str_TodayZhi
+    str_Day = TRUNKS[nTodayGan] + BOUGHS[nTodayZhi]
     
-    #//时干支
-    str_Time = cListTime[nShiCheng][int(nTodayGan % 5)]
+    # 时干支
+    str_Time = TIME_ERA[nShiCheng][int(nTodayGan % 5)]
     nTimeGan = 0 # 考刻分 时上起刻
 
     for j in range(0, 10):
-        if str_Time[:1] == cTianGan[j]:
+        if str_Time[:1] == TRUNKS[j]:
             nTimeGan = j
             break
     
-    str_Minute = cListTime[nMinute][int(nTimeGan % 5)]
+    # str_Minute = TIME_ERA[nMinute][int(nTimeGan % 5)]
 
     # 四柱 + 考时 + 十字
-    return str_Year, str_Month, str_Day, str_Time, str_Minute
+    return str_Year, str_Month, str_Day, str_Time
+    # , str_Minute

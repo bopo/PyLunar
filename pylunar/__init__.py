@@ -1,6 +1,6 @@
 from .converter import Solar, Lunar, DateNotExist, Converter
-from .festival import zh_festivals
 from .solarterm import zh_solarterms
+from .festivals import zh_festivals
 
 __all__ = [
     'Solar', 'Lunar', 'DateNotExist', 'Converter',

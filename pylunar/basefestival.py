@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 def zh_map(lang):
     lang = lang.lower()
     return {'zh': 'zh_hans',

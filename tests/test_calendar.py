@@ -1,6 +1,9 @@
+import datetime
 import unittest
 
-from pylunar.calendar import *
+from pylunar import Converter, DateNotExist, Lunar, Solar
+from pylunar.festival import festivals
+from pylunar.solarterm import solarterms
 
 
 class FuncTestCase(unittest.TestCase):
@@ -28,9 +31,7 @@ class FuncTestCase(unittest.TestCase):
         self.assertEqual(Get24LunarFeast((2013, 5, 4)), ('', 3))
 
     def testGet8Zi(self):
-        self.assertEqual(Get8Zi((2012, 5, 4, 0, 0)),
-                         ('壬辰', '甲辰', '乙丑', '丙子', '甲午'))
-        # 0时0分应为子时午分
+        self.assertEqual(Get8Zi((2012, 5, 4, 0, 0)), ('壬辰', '甲辰', '乙丑', '丙子', '甲午'))
 
 if __name__ == '__main__':
     unittest.main()
