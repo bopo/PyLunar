@@ -1,4 +1,5 @@
-from ._era import TRUNKS, BOUGHS, ZODIAC, LUNAR_DAY, LUNAR_MON
+from ._era import BOUGHS, LUNAR_DAY, LUNAR_MON, TRUNKS, ZODIAC
+
 
 def LunarString(lunar, embolism=False):
     # 生成属相

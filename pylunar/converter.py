@@ -3,8 +3,6 @@
 import datetime
 import traceback
 
-# from ._compact import unicode_compatible
-
 
 class DateNotExist(Exception):
     ''' eg. datetime.date(2017, 2, 29) doesn't exist. '''

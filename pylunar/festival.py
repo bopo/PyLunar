@@ -9,8 +9,6 @@ from .basefestival import Festival
 from .converter import Lunar
 
 # ######### Solar Festival ##########
-
-
 NewYear = Festival(
         lambda year: datetime.date(year, 1, 1),
         en="New Year's Day",

@@ -3,6 +3,7 @@ import traceback
 
 from pylunar import Converter, DateNotExist, Lunar, Solar
 from pylunar.festival import festivals
+from pylunar.solarterm import solarterms
 
 # 公历转农历:
 solar = Solar(2018, 1, 1)
@@ -35,7 +36,6 @@ except DateNotExist:
     print(traceback.format_exc())
 
 
-from pylunar.solarterm import solarterms
 for x in [(f(2018), f.get_lang('zh')) for f in sorted(solarterms, key=lambda _f: _f(20 18))]:
     print('{} {}'.format(*x))
 
